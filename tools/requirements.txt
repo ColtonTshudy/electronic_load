@@ -1,0 +1,8 @@
+# Python dependencies for the tools in this folder.
+# Install: python -m pip install -r requirements.txt
+# Minimum versions are the ones the tools were tested with.
+
+pyserial>=3.5        # bench.py, list_ports.py, sousim_cal.py, sousim_gui.py
+numpy>=2.4.6         # sousim_gui.py
+PySide6>=6.12.0      # sousim_gui.py
+pyqtgraph>=0.14.0    # sousim_gui.py
