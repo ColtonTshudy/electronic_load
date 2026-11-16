@@ -8,6 +8,6 @@ openocd ^
   -f target/stm32f1x.cfg ^
   -c "init" ^
   -c "reset halt" ^
-  -c "flash read_bank 0 flash_dump.bin 0 0x10000" ^
+  -c "flash read_bank 0 test.bin 0 0x10000" ^
   -c "reset" ^
   -c "shutdown"

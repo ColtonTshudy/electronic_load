@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -199,5 +200,41 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /* USER CODE BEGIN 1 */
+
+/** 10 kHz control tick */
+void TIM7_IRQHandler(void)
+{
+  if (TIM7->SR & TIM_SR_UIF)
+  {
+    TIM7->SR = ~TIM_SR_UIF;
+    ctl_tick_isr();
+  }
+}
+
+/** USART1: reference meter (factory calibration) */
+void USART1_IRQHandler(void)
+{
+  uint32_t sr = USART1->SR;
+  if (sr & (USART_SR_RXNE | USART_SR_ORE))
+  {
+    uint8_t b = (uint8_t)USART1->DR;   /* reading DR also clears ORE */
+    if (sr & USART_SR_RXNE) cal_rx_byte_isr(b);
+  }
+}
+
+/** USART2: Modbus RTU (RX bytes, end of DMA transmission) */
+void USART2_IRQHandler(void)
+{
+  uint32_t sr = USART2->SR;
+  if (sr & (USART_SR_RXNE | USART_SR_ORE))
+  {
+    uint8_t b = (uint8_t)USART2->DR;
+    if (sr & USART_SR_RXNE) mb_rx_byte_isr(b);
+  }
+  if ((USART2->CR1 & USART_CR1_TCIE) && (sr & USART_SR_TC))
+  {
+    rs485_tx_isr();
+  }
+}
 
 /* USER CODE END 1 */
